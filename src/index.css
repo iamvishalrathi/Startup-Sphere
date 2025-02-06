@@ -4,7 +4,16 @@
 
 /* Custom base styles */
 body {
-  @apply bg-gray-50;
+  @apply bg-dark text-gray-200;
+}
+
+/* Custom component styles */
+.card {
+  @apply bg-dark-light rounded-lg shadow-xl border border-gray-800;
+}
+
+.input-dark {
+  @apply bg-dark-light border-gray-700 text-gray-200 focus:border-primary focus:ring-primary;
 }
 
 /* You can add more custom styles here */
