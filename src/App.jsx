@@ -5,6 +5,8 @@ import Home from './pages/Home'
 import Departments from './pages/Departments'
 import Events from './pages/Events'
 import Admin from './pages/Admin'
+import About from './pages/About'
+import Gallery from './pages/Gallery'
 
 const App = () => {
     return (
@@ -14,8 +16,10 @@ const App = () => {
                 <main>
                     <Routes>
                         <Route path="/" element={<Home />} />
+                        <Route path="/about" element={<About />} />
                         <Route path="/departments" element={<Departments />} />
                         <Route path="/events" element={<Events />} />
+                        <Route path="/gallery" element={<Gallery />} />
                         <Route path="/admin" element={<Admin />} />
                     </Routes>
                 </main>
