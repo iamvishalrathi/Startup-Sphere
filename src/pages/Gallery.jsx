@@ -17,15 +17,43 @@ const Gallery = () => {
       id: 1,
       category: "events",
       title: "Startup Weekend 2023",
-      image: "https://source.unsplash.com/800x600/?startup",
+      image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b",
       description: "Annual startup pitching competition"
     },
     {
       id: 2,
       category: "workspace",
       title: "Innovation Hub",
-      image: "https://source.unsplash.com/800x600/?office",
+      image: "https://images.unsplash.com/photo-1497366216548-37526070297c",
       description: "Our modern coworking space"
+    },
+    {
+      id: 3,
+      category: "team",
+      title: "Team Building 2023",
+      image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c",
+      description: "Annual team building event"
+    },
+    {
+      id: 4,
+      category: "success",
+      title: "Graduation Day",
+      image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18",
+      description: "Celebrating our successful startups"
+    },
+    {
+      id: 5,
+      category: "events",
+      title: "Tech Conference 2023",
+      image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87",
+      description: "Annual technology conference"
+    },
+    {
+      id: 6,
+      category: "workspace",
+      title: "Meeting Rooms",
+      image: "https://images.unsplash.com/photo-1497366811353-6870744d04b2",
+      description: "State-of-the-art meeting facilities"
     },
     // Add more photos here
   ]
