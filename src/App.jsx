@@ -1,17 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Navbar from './components/layout/Navbar'
+import Navigation from './components/layout/Navigation'
 import Footer from './components/layout/Footer'
 import Home from './pages/Home'
 import Departments from './pages/Departments'
 import Events from './pages/Events'
 import Admin from './pages/Admin'
 
-function App() {
+const App = () => {
     return (
         <Router>
-            <div className="min-h-screen flex flex-col">
-                <Navbar />
-                <main className="flex-grow">
+            <div className="min-h-screen bg-dark text-white">
+                <Navigation />
+                <main>
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/departments" element={<Departments />} />
