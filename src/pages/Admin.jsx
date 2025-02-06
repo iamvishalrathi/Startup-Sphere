@@ -64,51 +64,7 @@ const Admin = () => {
     <div className="min-h-screen bg-dark pt-16">
       {isLoggedIn ? (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="max-w-md mx-auto card p-8">
-            <h2 className="text-2xl font-bold mb-6 text-primary-light text-center">Admin Login</h2>
-            {error && (
-              <div className="bg-red-500/10 border border-red-500 text-red-500 rounded-md p-3 mb-4">
-                {error}
-              </div>
-            )}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-300">
-                  Username
-                </label>
-                <input
-                  type="text"
-                  name="username"
-                  id="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md input-dark"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-300">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md input-dark"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition-colors duration-200"
-              >
-                Login
-              </button>
-            </form>
-          </div>
-          <div className="card p-8 mt-8">
+          <div className="card p-8">
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-3xl font-bold text-primary-light">Admin Dashboard</h1>
               <button
@@ -118,6 +74,7 @@ const Admin = () => {
                 Logout
               </button>
             </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="card p-6">
                 <h3 className="text-xl font-semibold text-secondary-light mb-4">Quick Stats</h3>
