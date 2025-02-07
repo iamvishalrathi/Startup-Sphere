@@ -331,35 +331,37 @@ const Events = () => {
                     layout
                     className="group relative rounded-lg overflow-hidden"
                   >
-                    <div className="absolute top-4 right-4 z-10 flex gap-2">
-                      <button
-                        onClick={() => shareEvent(event)}
-                        className="p-2 rounded-full bg-dark-darker/80 text-gray-300 hover:text-primary-light transition-colors duration-300"
-                      >
-                        <ShareIcon className="h-5 w-5" />
-                      </button>
-                      <button
-                        onClick={() => toggleFavorite(event.id)}
-                        className="p-2 rounded-full bg-dark-darker/80 text-gray-300 hover:text-primary-light transition-colors duration-300"
-                      >
-                        {favorites.includes(event.id) ? (
-                          <HeartIconSolid className="h-5 w-5 text-primary-light" />
-                        ) : (
-                          <HeartIcon className="h-5 w-5" />
-                        )}
-                      </button>
-                    </div>
                     <div className="p-6 bg-dark-darker/80 backdrop-blur-sm border border-gray-800 rounded-lg hover:border-primary-light transition-all duration-300">
                       <div className="flex justify-between items-start mb-4">
-                        <span className={`px-3 py-1 rounded-full text-sm ${
-                          event.status === 'Upcoming' ? 'bg-primary-light/20 text-primary-light' : 
-                          'bg-secondary-light/20 text-secondary-light'
-                        }`}>
-                          {event.status}
-                        </span>
                         <div className="flex items-center gap-2">
-                          <TagIcon className="h-4 w-4 text-gray-400" />
-                          <span className="text-sm text-gray-400">{event.type}</span>
+                          <span className={`px-3 py-1 rounded-full text-sm ${
+                            event.status === 'Upcoming' ? 'bg-primary-light/20 text-primary-light' : 
+                            'bg-secondary-light/20 text-secondary-light'
+                          }`}>
+                            {event.status}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <TagIcon className="h-4 w-4 text-gray-400" />
+                            <span className="text-sm text-gray-400">{event.type}</span>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => shareEvent(event)}
+                            className="p-2 rounded-full bg-dark-darker/80 text-gray-300 hover:text-primary-light transition-colors duration-300"
+                          >
+                            <ShareIcon className="h-5 w-5" />
+                          </button>
+                          <button
+                            onClick={() => toggleFavorite(event.id)}
+                            className="p-2 rounded-full bg-dark-darker/80 text-gray-300 hover:text-primary-light transition-colors duration-300"
+                          >
+                            {favorites.includes(event.id) ? (
+                              <HeartIconSolid className="h-5 w-5 text-primary-light" />
+                            ) : (
+                              <HeartIcon className="h-5 w-5" />
+                            )}
+                          </button>
                         </div>
                       </div>
 
