@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   CalendarIcon, 
@@ -7,8 +7,13 @@ import {
   ClockIcon,
   TagIcon,
   VideoCameraIcon,
-  GlobeAltIcon
+  GlobeAltIcon,
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  ShareIcon,
+  HeartIcon
 } from '@heroicons/react/24/outline'
+import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid'
 import AnimatedBackground from '../components/AnimatedBackground'
 
 const Events = () => {
@@ -132,6 +137,10 @@ const Events = () => {
 
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [filteredEvents, setFilteredEvents] = useState(events)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [favorites, setFavorites] = useState([])
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
+  const [sortBy, setSortBy] = useState("date") // date, price
 
   const categories = [
     "All", 
@@ -144,32 +153,82 @@ const Events = () => {
     "Free Events"
   ]
   
-  const filterEvents = (category) => {
-    setSelectedCategory(category)
+  useEffect(() => {
+    // Load favorites from localStorage
+    const savedFavorites = localStorage.getItem('eventFavorites')
+    if (savedFavorites) {
+      setFavorites(JSON.parse(savedFavorites))
+    }
+  }, [])
+
+  const toggleFavorite = (eventId) => {
+    const newFavorites = favorites.includes(eventId)
+      ? favorites.filter(id => id !== eventId)
+      : [...favorites, eventId]
     
-    if (category === "All") {
-      setFilteredEvents(events)
-      return
-    }
-
-    if (category === "Free Events") {
-      setFilteredEvents(events.filter(event => event.price === "Free"))
-      return
-    }
-
-    if (category === "Online") {
-      setFilteredEvents(events.filter(event => event.mode === "Online"))
-      return
-    }
-
-    if (category === "In-person") {
-      setFilteredEvents(events.filter(event => event.mode === "In-person"))
-      return
-    }
-
-    // Filter by event type (Conference, Workshop, etc.)
-    setFilteredEvents(events.filter(event => event.type === category))
+    setFavorites(newFavorites)
+    localStorage.setItem('eventFavorites', JSON.stringify(newFavorites))
   }
+
+  const shareEvent = async (event) => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: event.title,
+          text: event.description,
+          url: window.location.href
+        })
+      } catch (err) {
+        console.log('Error sharing:', err)
+      }
+    }
+  }
+
+  const filterAndSortEvents = () => {
+    let result = [...events]
+
+    // Category filter
+    if (selectedCategory !== "All") {
+      if (selectedCategory === "Free Events") {
+        result = result.filter(event => event.price === "Free")
+      } else if (selectedCategory === "Online" || selectedCategory === "In-person") {
+        result = result.filter(event => event.mode === selectedCategory)
+      } else {
+        result = result.filter(event => event.type === selectedCategory)
+      }
+    }
+
+    // Search filter
+    if (searchTerm) {
+      result = result.filter(event => 
+        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.topics.some(topic => topic.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    }
+
+    // Favorites filter
+    if (showFavoritesOnly) {
+      result = result.filter(event => favorites.includes(event.id))
+    }
+
+    // Sorting
+    if (sortBy === "price") {
+      result.sort((a, b) => {
+        const priceA = a.price === "Free" ? 0 : parseInt(a.price.replace(/[^0-9]/g, ''))
+        const priceB = b.price === "Free" ? 0 : parseInt(b.price.replace(/[^0-9]/g, ''))
+        return priceA - priceB
+      })
+    } else {
+      result.sort((a, b) => new Date(a.date) - new Date(b.date))
+    }
+
+    return result
+  }
+
+  useEffect(() => {
+    setFilteredEvents(filterAndSortEvents())
+  }, [selectedCategory, searchTerm, showFavoritesOnly, sortBy, favorites])
 
   return (
     <div className="pt-16 bg-dark">
@@ -193,14 +252,48 @@ const Events = () => {
         </div>
       </section>
 
-      {/* Filters Section */}
-      <section className="py-8 bg-dark-darker">
+      {/* Search and Filters Section */}
+      <section className="py-8 bg-dark-darker sticky top-16 z-20 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Search Bar */}
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="relative flex-1">
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search events, topics, or keywords..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 rounded-lg bg-dark-light border border-gray-700 text-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300"
+              />
+            </div>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 ${
+                  showFavoritesOnly ? 'bg-primary text-white' : 'bg-dark-light text-gray-300 hover:bg-primary/20'
+                }`}
+              >
+                {showFavoritesOnly ? <HeartIconSolid className="h-5 w-5" /> : <HeartIcon className="h-5 w-5" />}
+                Favorites
+              </button>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-4 py-2 rounded-lg bg-dark-light border border-gray-700 text-gray-300 focus:border-primary outline-none"
+              >
+                <option value="date">Sort by Date</option>
+                <option value="price">Sort by Price</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Category Filters */}
           <div className="flex flex-wrap gap-4 justify-center">
             {categories.map((category, index) => (
               <button
                 key={index}
-                onClick={() => filterEvents(category)}
+                onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-full transition-all duration-300 ${
                   selectedCategory === category
                     ? 'bg-primary text-white'
@@ -223,7 +316,7 @@ const Events = () => {
               animate={{ opacity: 1 }}
               className="text-center py-12"
             >
-              <p className="text-gray-400 text-xl">No events found in this category.</p>
+              <p className="text-gray-400 text-xl">No events found matching your criteria.</p>
             </motion.div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -238,6 +331,24 @@ const Events = () => {
                     layout
                     className="group relative rounded-lg overflow-hidden"
                   >
+                    <div className="absolute top-4 right-4 z-10 flex gap-2">
+                      <button
+                        onClick={() => shareEvent(event)}
+                        className="p-2 rounded-full bg-dark-darker/80 text-gray-300 hover:text-primary-light transition-colors duration-300"
+                      >
+                        <ShareIcon className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => toggleFavorite(event.id)}
+                        className="p-2 rounded-full bg-dark-darker/80 text-gray-300 hover:text-primary-light transition-colors duration-300"
+                      >
+                        {favorites.includes(event.id) ? (
+                          <HeartIconSolid className="h-5 w-5 text-primary-light" />
+                        ) : (
+                          <HeartIcon className="h-5 w-5" />
+                        )}
+                      </button>
+                    </div>
                     <div className="p-6 bg-dark-darker/80 backdrop-blur-sm border border-gray-800 rounded-lg hover:border-primary-light transition-all duration-300">
                       <div className="flex justify-between items-start mb-4">
                         <span className={`px-3 py-1 rounded-full text-sm ${
